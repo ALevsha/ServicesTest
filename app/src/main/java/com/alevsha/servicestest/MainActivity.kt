@@ -14,7 +14,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         binding.simpleService.setOnClickListener{
-            startService(MyService.myServiceIntent(this))
+            startService(MyService.myServiceIntent(this, 25))
         }
     }
 }
