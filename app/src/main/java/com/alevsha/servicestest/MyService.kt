@@ -25,14 +25,22 @@ class MyService: Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         log("onStartCommand")
 
+        val start = intent?.getIntExtra(EXTRA_START, 0) ?: 0
         scope.launch {
-            for (i in 0 until 100){
+            for (i in start until start + 100){
                 delay(1000)
                 log("Time $i")
             }
         }
 
-        return super.onStartCommand(intent, flags, startId)
+        /**
+         * Метод onStartCommand возвращает значение Int, которое оповещает систему, что нужно
+         * сделать с сервисом, если процесс приложения будет завершен
+         *  START_STICKY = 1 - перезапуск сервиса
+         *  START_NOT_STICKY = 2 - завершение сервиса вместе с приложением
+         *  START_REDELIVER_INTENT = 3 - перезапуск с повторной передачей прошлого интента
+         * */
+        return START_NOT_STICKY
     }
 
     override fun onDestroy() {
@@ -47,8 +55,11 @@ class MyService: Service() {
 
     companion object{
 
-        fun myServiceIntent(context: Context): Intent{
+        private const val EXTRA_START = "EXTRA_START"
+
+        fun myServiceIntent(context: Context, start: Int): Intent{
             return Intent(context, MyService::class.java)
+                .putExtra(EXTRA_START, start)
         }
 
     }
